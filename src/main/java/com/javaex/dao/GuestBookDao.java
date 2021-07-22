@@ -163,5 +163,44 @@ public class GuestBookDao {
 
 		return count;
 	}
+	
+	//유저인포
+	public GuestBookVo getUserInfo(int listNo) {
+		GuestBookVo gbVo = null;
+
+		this.getConnection();
+
+		try {
+
+			// 3. SQL문 준비 / 바인딩 / 실행 --> 완성된 sql문을 가져와서 작성할것
+			String query = "";
+			query += "select no, ";
+			query += "       password ";
+			query += "from guestbook ";
+			query += "where no = ? ";
+
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, listNo);
+			rs = pstmt.executeQuery();
+
+			// 4.결과처리
+			while (rs.next()) {
+				int no = rs.getInt("no");
+				String password = rs.getString("password");
+
+				gbVo = new GuestBookVo();
+				gbVo.setNo(no);
+				gbVo.setPassword(password);
+			}
+
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		}
+
+		this.close();
+
+		return gbVo;
+
+	}
 
 }
