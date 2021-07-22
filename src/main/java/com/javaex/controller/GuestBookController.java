@@ -45,21 +45,37 @@ public class GuestBookController {
 		
 		return "/WEB-INF/views/deleteForm.jsp";
 	}
-	
+
+	/*
 	//삭제
 	@RequestMapping( value="delete", method= {RequestMethod.GET, RequestMethod.POST} )
 	public String delete(@ModelAttribute GuestBookVo gbVo) {
 		System.out.println("[GuestBookController.delete]");
 		GuestBookDao gbDao = new GuestBookDao();
 		gbDao.guestBookDelete(gbVo);
-		System.out.println(gbVo);
 		
 		return "redirect:/list";
 	}
+	*/
 	
+	//삭제 if추가?해봄?
+	@RequestMapping( value="delete", method= {RequestMethod.GET, RequestMethod.POST} )
+	public String delete(Model model, @ModelAttribute GuestBookVo gbVo) {
+		System.out.println("[GuestBookController.delete]");
+		GuestBookDao gbDao = new GuestBookDao();
+		GuestBookVo gbUserInfo = gbDao.getUserInfo(gbVo.getNo());
+		
+		//if추가?
+		if(gbUserInfo.getPassword().equals(gbVo.getPassword())) {
+			System.out.println("패스워드 일치");
+			gbDao.guestBookDelete(gbVo);
+		}else {
+			System.out.println("패스워드 불일치");
+			return "redirect:/deleteForm?no=" + gbVo.getNo() + "&action=fail";
+		}
 	
-	
-	
+		return "redirect:/list";
+	}
 	
 	
 	
